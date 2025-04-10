@@ -44,7 +44,7 @@ void setPixel(int x, int y, char screen[SCREEN_SIDE_LENGTH][SCREEN_SIDE_LENGTH])
     if ((x >= SCREEN_SIDE_LENGTH) || (y >= SCREEN_SIDE_LENGTH) || (x < 0) || (y < 0)) {
         return;
     }
-    screen[x][y] = 1;
+    screen[y][x] = 1;
 }
 
 void line(int x0, int y0, int x1, int y1, char screen[SCREEN_SIDE_LENGTH][SCREEN_SIDE_LENGTH])
@@ -54,7 +54,7 @@ void line(int x0, int y0, int x1, int y1, char screen[SCREEN_SIDE_LENGTH][SCREEN
     int err = dx + dy, e2; /* error value e_xy */
 
     while (1) {
-        setPixel(y0, x0, screen);
+        setPixel(x0, y0, screen);
         if (x0 == x1 && y0 == y1) break;
         e2 = 2 * err;
         if (e2 > dy) { err += dy; x0 += sx; } /* e_xy+e_x > 0 */
@@ -174,6 +174,24 @@ void drawLinesInCircle(int xMax, int yMax, int n, char screen[SCREEN_SIDE_LENGTH
     rasterCircle(xMax/2, yMax/2, ((xMax < yMax) ? xMax : yMax)/2, screen);
 }
 
+void drawLinesQuarterCircle(int xMax, int yMax, int n, char screen[SCREEN_SIDE_LENGTH][SCREEN_SIDE_LENGTH])
+{
+    n++;
+    double pi_fraction = -0.5*M_PI / n;
+    line(0, yMax, 0, 0, screen);
+    line(0, yMax, xMax, yMax, screen);
+    line(0, 0, xMax, 0, screen);
+    line(xMax, yMax, xMax, 0, screen);
+    for (int i = 0; i < n; i++)
+    {
+        int pointX = cos(i*pi_fraction) * yMax;
+        int pointY = sin(i*pi_fraction) * xMax + SCREEN_SIDE_LENGTH;
+        line(0, yMax, pointX, pointY, screen);
+        line(pointX, pointY, xMax, 0, screen);
+    }
+    rasterCircle(0, yMax, SCREEN_SIDE_LENGTH, screen);
+}
+
 int main()
 {
     int n;
@@ -189,7 +207,6 @@ int main()
     int yMax = SCREEN_SIDE_LENGTH - 1;
 
     printf("Drawing Structure\n");
-    drawLinesInCircle(xMax, yMax, n, screen);
     
     FileError err = writeInFile(screen);
     
