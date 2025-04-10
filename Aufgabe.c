@@ -83,6 +83,23 @@ FileError writeInFile(char screen[SCREEN_SIDE_LENGTH][SCREEN_SIDE_LENGTH])
     return FILE_SUCCESS;
 }
 
+void drawDiamond(int xMax, int yMax, int n, char screen[SCREEN_SIDE_LENGTH][SCREEN_SIDE_LENGTH])
+{
+    int halfX = xMax / 2;
+    int halfY = yMax / 2;
+    if (n == 1) {
+        line(0, halfY, xMax, halfY, screen);
+        return;
+    }
+    n--;
+    for (int i = 0; i <= n; i++)
+    {
+        int yPos = (i*yMax/n);
+        line(0, halfY, halfX, yPos, screen);
+        line(yMax, halfY, halfX, yPos, screen);
+    }
+}
+
 int main()
 {
     int n;
@@ -98,8 +115,7 @@ int main()
     int yMax = SCREEN_SIDE_LENGTH - 1;
 
     printf("Drawing Structure\n");
-    line(0, 999, 999, 0, screen);
-    line(0, 0, 999, 999, screen);
+    drawDiamond(xMax, yMax, n, screen);
     
     FileError err = writeInFile(screen);
     
