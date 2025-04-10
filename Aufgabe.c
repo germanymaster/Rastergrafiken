@@ -93,7 +93,10 @@ int main()
         return -1;
     }
     char screen[SCREEN_SIDE_LENGTH][SCREEN_SIDE_LENGTH] = {0};
-    
+
+    int xMax = SCREEN_SIDE_LENGTH - 1;
+    int yMax = SCREEN_SIDE_LENGTH - 1;
+
     printf("Drawing Structure\n");
     line(0, 999, 999, 0, screen);
     line(0, 0, 999, 999, screen);
