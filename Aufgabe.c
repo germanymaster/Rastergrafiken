@@ -33,6 +33,9 @@ const char* file_error(FileError err) {
 
 void setPixel(int x, int y, char screen[SCREEN_SIDE_LENGTH][SCREEN_SIDE_LENGTH])
 {
+    if ((x >= SCREEN_SIDE_LENGTH) || (y >= SCREEN_SIDE_LENGTH) || (x < 0) || (y < 0)) {
+        return;
+    }
     screen[x][y] = 1;
 }
 
@@ -48,6 +51,42 @@ void line(int x0, int y0, int x1, int y1, char screen[SCREEN_SIDE_LENGTH][SCREEN
         e2 = 2 * err;
         if (e2 > dy) { err += dy; x0 += sx; } /* e_xy+e_x > 0 */
         if (e2 < dx) { err += dx; y0 += sy; } /* e_xy+e_y < 0 */
+    }
+}
+
+void rasterCircle(int x0, int y0, int radius, char screen[SCREEN_SIDE_LENGTH][SCREEN_SIDE_LENGTH])
+{
+    int f = 1 - radius;
+    int ddF_x = 0;
+    int ddF_y = -2 * radius;
+    int x = 0;
+    int y = radius;
+
+    setPixel(x0, y0 + radius, screen);
+    setPixel(x0, y0 - radius, screen);
+    setPixel(x0 + radius, y0, screen);
+    setPixel(x0 - radius, y0, screen);
+
+    while(x < y)
+    {
+        if (f >= 0)
+        {
+            y -= 1;
+            ddF_y += 2;
+            f += ddF_y;
+        }
+        x += 1;
+        ddF_x += 2;
+        f += ddF_x + 1;
+
+        setPixel(x0 + x, y0 + y, screen);
+        setPixel(x0 - x, y0 + y, screen);
+        setPixel(x0 + x, y0 - y, screen);
+        setPixel(x0 - x, y0 - y, screen);
+        setPixel(x0 + y, y0 + x, screen);
+        setPixel(x0 - y, y0 + x, screen);
+        setPixel(x0 + y, y0 - x, screen);
+        setPixel(x0 - y, y0 - x, screen);
     }
 }
 
@@ -115,7 +154,7 @@ int main()
     int yMax = SCREEN_SIDE_LENGTH - 1;
 
     printf("Drawing Structure\n");
-    drawDiamond(xMax, yMax, n, screen);
+    rasterCircle(xMax/2, yMax/2, n, screen);
     
     FileError err = writeInFile(screen);
     
