@@ -1,5 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
+#define _USE_MATH_DEFINES
+#include <math.h>
 
 enum {
     SCREEN_SIDE_LENGTH = 1000
@@ -13,6 +15,12 @@ typedef enum {
     FILE_CLOSE_ERROR,
     FILE_ERR_UNKNOWN,
 } FileError;
+
+typedef struct posStruct
+{
+    int x;
+    int y;
+} PositionStruct;
 
 const char* file_error(FileError err) {
     switch (err) {
@@ -139,6 +147,33 @@ void drawDiamond(int xMax, int yMax, int n, char screen[SCREEN_SIDE_LENGTH][SCRE
     }
 }
 
+void drawLinesInCircle(int xMax, int yMax, int n, char screen[SCREEN_SIDE_LENGTH][SCREEN_SIDE_LENGTH])
+{
+    double pi_fraction = 2*M_PI / n;
+    PositionStruct points[1000] = {0, 0};
+    for (int i = 0; i < n; i++)
+    {
+        int pointX = cos(i*pi_fraction) * yMax/2 + SCREEN_SIDE_LENGTH/2;
+        int pointY = sin(i*pi_fraction) * xMax/2 + SCREEN_SIDE_LENGTH/2;
+        printf("Number = %f\n", pi_fraction);
+        printf("Point X = %d\n", pointX);
+        printf("Point Y = %d\n", pointY);
+        points[i].x = pointX;
+        points[i].y = pointY;
+    }
+    for (int i = 0; points[i].x != 0 || points[i].y != 0; i++)
+    {
+        for (int j = 0; points[j].x != 0 || points[j].y != 0; j++)
+        {
+            if (i != j)
+            {
+                line(points[i].x, points[i].y, points[j].x, points[j].y, screen);
+            }
+        }
+    }
+    rasterCircle(xMax/2, yMax/2, ((xMax < yMax) ? xMax : yMax)/2, screen);
+}
+
 int main()
 {
     int n;
@@ -154,7 +189,7 @@ int main()
     int yMax = SCREEN_SIDE_LENGTH - 1;
 
     printf("Drawing Structure\n");
-    rasterCircle(xMax/2, yMax/2, n, screen);
+    drawLinesInCircle(xMax, yMax, n, screen);
     
     FileError err = writeInFile(screen);
     
