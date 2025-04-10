@@ -43,7 +43,7 @@ void line(int x0, int y0, int x1, int y1, char screen[SCREEN_SIDE_LENGTH][SCREEN
     int err = dx + dy, e2; /* error value e_xy */
 
     while (1) {
-        setPixel(x0, y0, screen);
+        setPixel(y0, x0, screen);
         if (x0 == x1 && y0 == y1) break;
         e2 = 2 * err;
         if (e2 > dy) { err += dy; x0 += sx; } /* e_xy+e_x > 0 */
