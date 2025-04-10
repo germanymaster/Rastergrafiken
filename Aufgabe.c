@@ -85,6 +85,13 @@ FileError writeInFile(char screen[SCREEN_SIDE_LENGTH][SCREEN_SIDE_LENGTH])
 
 int main()
 {
+    int n;
+    printf("Gib den Wert von N ein: ");
+    scanf_s("%d", &n);
+    printf("%d\n", n);
+    if (n < 0) {
+        return -1;
+    }
     char screen[SCREEN_SIDE_LENGTH][SCREEN_SIDE_LENGTH] = {0};
     
     printf("Drawing Structure\n");
