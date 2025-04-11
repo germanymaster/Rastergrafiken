@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #define _USE_MATH_DEFINES
 #include <math.h>
+#include <stdbool.h>
 
 enum {
     SCREEN_SIDE_LENGTH = 1000
@@ -42,6 +43,10 @@ const char* file_error(FileError err) {
 void setPixel(int x, int y, char screen[SCREEN_SIDE_LENGTH][SCREEN_SIDE_LENGTH])
 {
     if ((x >= SCREEN_SIDE_LENGTH) || (y >= SCREEN_SIDE_LENGTH) || (x < 0) || (y < 0)) {
+        return;
+    }
+    if (screen[y][x] == 1)
+    {
         return;
     }
     screen[y][x] = 1;
@@ -220,24 +225,45 @@ trianglePos recursiveTriangle(trianglePos point, int n, char screen[SCREEN_SIDE_
     return point;
 }
 
-trianglePos recursiveTripleTriangle(trianglePos point, int n, char screen[SCREEN_SIDE_LENGTH][SCREEN_SIDE_LENGTH])
+trianglePos recursiveTripleTriangle(trianglePos point, int n, _Bool combo, char screen[SCREEN_SIDE_LENGTH][SCREEN_SIDE_LENGTH])
 {
-    int ytemp = point.point1.y;
-    int xtemp = point.point1.x;
-    point.point1.x = point.point1.x + (point.point2.x-point.point1.x)/4;
-    point.point1.y = point.point3.y - (point.point3.y - ytemp)/2;
-    printf("HERE:%d %d\n", point.point3.y, ytemp);
-    point.point2.x = xtemp + (point.point2.x - xtemp)*0.75;
-    point.point2.y = point.point3.y - (point.point3.y - point.point2.y)/2;
-    point.point3.y = ytemp;
     line(point.point1.x, point.point1.y, point.point3.x, point.point3.y, screen);
     line(point.point2.x, point.point2.y, point.point3.x, point.point3.y, screen);
     line(point.point1.x, point.point1.y,point.point2.x, point.point2.y, screen);
+    if (combo) {
+        recursiveTriangle(point, n, screen);
+    }
     if (n == 0)
     {
         return point;
     }
-    recursiveTripleTriangle(point, n-1, screen);
+    int ytemp = point.point1.y;
+    int xtemp = point.point1.x;
+    point.point1.x = round(point.point1.x + (point.point2.x-point.point1.x)/4);
+    point.point1.y = round(point.point3.y - (point.point3.y - ytemp)/2);
+    printf("HERE:%d %d\n", point.point3.y, ytemp);
+    point.point2.x = round(xtemp + (point.point2.x - xtemp)*0.75);
+    point.point2.y = round(point.point3.y - (point.point3.y - point.point2.y)/2);
+    point.point3.y = point.point3.y;
+
+    
+    int xdiff = point.point2.x - point.point1.x;
+    int ydiff = (point.point2.y - point.point3.y)*2; 
+    trianglePos triangle1 = point;
+    triangle1.point1.x -= xdiff;
+    triangle1.point2.x -= xdiff;
+    triangle1.point3.x -= xdiff;
+    recursiveTripleTriangle(triangle1, n-1, combo, screen);
+    trianglePos triangle2 = point;
+    triangle2.point1.x += xdiff;
+    triangle2.point2.x += xdiff;
+    triangle2.point3.x += xdiff;
+    recursiveTripleTriangle(triangle2, n-1, combo, screen);
+    trianglePos triangle3 = point;
+    triangle3.point1.y += ydiff;
+    triangle3.point2.y += ydiff;
+    triangle3.point3.y += ydiff;
+    recursiveTripleTriangle(triangle3, n-1, combo, screen);
     return point;
 }
 
@@ -273,10 +299,6 @@ int main()
     line(posX2, posY2, xMax/2, 0, screen);
     
     line(posX1, posY1, posX2, posY2, screen);
-    
-    //line(posX2/2, posY1/2, xMax/2, posY1, screen);
-    //line(posX1+(posX2-posX1)*0.75, posY1/2, xMax/2, posY1, screen);
-    //line(posX2/2, posY1/2, posX1+(posX2-posX1)*0.75,posY1/2, screen);
     //
     trianglePos point;
     point.point1.x = posX1;
@@ -285,7 +307,9 @@ int main()
     point.point2.y = posY2;
     point.point3.x = xMax/2;
     point.point3.y = 0;
-    recursiveTriangle(point, n, screen);
+    //recursiveTriangle(point, n, screen);
+    _Bool combo = false;
+    recursiveTripleTriangle(point, n, combo, screen);
     
     FileError err = writeInFile(screen);
     
