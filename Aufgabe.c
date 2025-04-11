@@ -199,28 +199,6 @@ typedef struct triangle_pos_struct
     PositionStruct point3;
 } trianglePos;
 
-trianglePos recursiveTriangle(trianglePos point, int n, char screen[SCREEN_SIDE_LENGTH][SCREEN_SIDE_LENGTH]);
-
-trianglePos recursiveTriangleU(trianglePos point, int n, char screen[SCREEN_SIDE_LENGTH][SCREEN_SIDE_LENGTH])
-{
-    int ytemp = point.point1.y;
-    int xtemp = point.point1.x;
-    point.point1.x = point.point1.x + (point.point2.x-point.point1.x)/4;
-    point.point1.y = ytemp + (point.point3.y - ytemp)/2;
-    point.point2.x = xtemp + (point.point2.x - xtemp)*0.75;
-    point.point2.y = point.point2.y + (point.point3.y - point.point2.y)/2;
-    point.point3.y = ytemp;
-    line(point.point1.x, point.point1.y, point.point3.x, point.point3.y, screen);
-    line(point.point2.x, point.point2.y, point.point3.x, point.point3.y, screen);
-    line(point.point1.x, point.point1.y,point.point2.x, point.point2.y, screen);
-    if (n == 0)
-    {
-        return point;
-    }
-    recursiveTriangle(point, n-1, screen);
-    return point;
-}
-
 trianglePos recursiveTriangle(trianglePos point, int n, char screen[SCREEN_SIDE_LENGTH][SCREEN_SIDE_LENGTH])
 {
     int ytemp = point.point1.y;
@@ -238,7 +216,7 @@ trianglePos recursiveTriangle(trianglePos point, int n, char screen[SCREEN_SIDE_
     {
         return point;
     }
-    recursiveTriangleU(point, n-1, screen);
+    recursiveTriangle(point, n-1, screen);
     return point;
 }
 
