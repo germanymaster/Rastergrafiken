@@ -3,6 +3,7 @@
 #define _USE_MATH_DEFINES
 #include <math.h>
 #include <stdbool.h>
+#include <Windows.h> 
 
 enum {
     SCREEN_SIDE_LENGTH = 1000
@@ -315,6 +316,15 @@ int main()
     
     if (err != FILE_SUCCESS) {
         printf("Error: %s\n", file_error(err));
+    }
+    
+    char path[MAX_PATH];
+    DWORD result = GetCurrentDirectoryA(MAX_PATH, path);
+    
+    if (result == 0) {
+        printf("Fehler beim Abrufen des Pfads.\n");
+    } else {
+        printf("Vollständiger Pfad zur .exe:\n%s\n", path);
     }
 }
 
