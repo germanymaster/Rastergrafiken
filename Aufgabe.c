@@ -192,6 +192,77 @@ void drawLinesQuarterCircle(int xMax, int yMax, int n, char screen[SCREEN_SIDE_L
     rasterCircle(0, yMax, SCREEN_SIDE_LENGTH, screen);
 }
 
+typedef struct triangle_pos_struct
+{
+    PositionStruct point1;
+    PositionStruct point2;
+    PositionStruct point3;
+} trianglePos;
+
+trianglePos recursiveTriangle(trianglePos point, int n, char screen[SCREEN_SIDE_LENGTH][SCREEN_SIDE_LENGTH]);
+
+trianglePos recursiveTriangleU(trianglePos point, int n, char screen[SCREEN_SIDE_LENGTH][SCREEN_SIDE_LENGTH])
+{
+    int ytemp = point.point1.y;
+    int xtemp = point.point1.x;
+    point.point1.x = point.point1.x + (point.point2.x-point.point1.x)/4;
+    point.point1.y = ytemp + (point.point3.y - ytemp)/2;
+    point.point2.x = xtemp + (point.point2.x - xtemp)*0.75;
+    point.point2.y = point.point2.y + (point.point3.y - point.point2.y)/2;
+    point.point3.y = ytemp;
+    line(point.point1.x, point.point1.y, point.point3.x, point.point3.y, screen);
+    line(point.point2.x, point.point2.y, point.point3.x, point.point3.y, screen);
+    line(point.point1.x, point.point1.y,point.point2.x, point.point2.y, screen);
+    if (n == 0)
+    {
+        return point;
+    }
+    recursiveTriangle(point, n-1, screen);
+    return point;
+}
+
+trianglePos recursiveTriangle(trianglePos point, int n, char screen[SCREEN_SIDE_LENGTH][SCREEN_SIDE_LENGTH])
+{
+    int ytemp = point.point1.y;
+    int xtemp = point.point1.x;
+    point.point1.x = point.point1.x + (point.point2.x-point.point1.x)/4;
+    point.point1.y = point.point3.y - (point.point3.y - ytemp)/2;
+    printf("HERE:%d %d\n", point.point3.y, ytemp);
+    point.point2.x = xtemp + (point.point2.x - xtemp)*0.75;
+    point.point2.y = point.point3.y - (point.point3.y - point.point2.y)/2;
+    point.point3.y = ytemp;
+    line(point.point1.x, point.point1.y, point.point3.x, point.point3.y, screen);
+    line(point.point2.x, point.point2.y, point.point3.x, point.point3.y, screen);
+    line(point.point1.x, point.point1.y,point.point2.x, point.point2.y, screen);
+    if (n == 0)
+    {
+        return point;
+    }
+    recursiveTriangleU(point, n-1, screen);
+    return point;
+}
+
+trianglePos recursiveTripleTriangle(trianglePos point, int n, char screen[SCREEN_SIDE_LENGTH][SCREEN_SIDE_LENGTH])
+{
+    int ytemp = point.point1.y;
+    int xtemp = point.point1.x;
+    point.point1.x = point.point1.x + (point.point2.x-point.point1.x)/4;
+    point.point1.y = point.point3.y - (point.point3.y - ytemp)/2;
+    printf("HERE:%d %d\n", point.point3.y, ytemp);
+    point.point2.x = xtemp + (point.point2.x - xtemp)*0.75;
+    point.point2.y = point.point3.y - (point.point3.y - point.point2.y)/2;
+    point.point3.y = ytemp;
+    line(point.point1.x, point.point1.y, point.point3.x, point.point3.y, screen);
+    line(point.point2.x, point.point2.y, point.point3.x, point.point3.y, screen);
+    line(point.point1.x, point.point1.y,point.point2.x, point.point2.y, screen);
+    if (n == 0)
+    {
+        return point;
+    }
+    recursiveTripleTriangle(point, n-1, screen);
+    return point;
+}
+
 int main()
 {
     int n;
@@ -206,11 +277,55 @@ int main()
     int xMax = SCREEN_SIDE_LENGTH - 1;
     int yMax = SCREEN_SIDE_LENGTH - 1;
 
-    printf("Drawing Structure\n");
+    printf("Drawing Structure...\n");
+    line(0, 0, xMax, 0, screen);
+    int posX = cos(M_PI * 2/6) * xMax;
+    int posY = sin(M_PI * 2/6) * yMax;
+    line(0, 0, posX, posY, screen);
+    posX = cos(M_PI * 4/6) * xMax + SCREEN_SIDE_LENGTH;
+    posY = sin(M_PI * 4/6) * yMax;
+    line(xMax, 0, posX, posY, screen);
+    printf("%d\n%d\n", posX, posY);
+    //
+    int posX1 = cos(M_PI * 2/6) * xMax/2;
+    int posY1 = sin(M_PI * 2/6) * yMax/2;
+    line(posX1, posY1, xMax/2, 0, screen);
+    int posX2 = cos(M_PI * 4/6) * xMax/2 + SCREEN_SIDE_LENGTH;
+    int posY2 = sin(M_PI * 4/6) * yMax/2;
+    line(posX2, posY2, xMax/2, 0, screen);
+    
+    line(posX1, posY1, posX2, posY2, screen);
+    
+    //line(posX2/2, posY1/2, xMax/2, posY1, screen);
+    //line(posX1+(posX2-posX1)*0.75, posY1/2, xMax/2, posY1, screen);
+    //line(posX2/2, posY1/2, posX1+(posX2-posX1)*0.75,posY1/2, screen);
+    //
+    trianglePos point;
+    point.point1.x = posX1;
+    point.point1.y = posY1;
+    point.point2.x = posX2;
+    point.point2.y = posY2;
+    point.point3.x = xMax/2;
+    point.point3.y = 0;
+    recursiveTriangle(point, n, screen);
     
     FileError err = writeInFile(screen);
     
     if (err != FILE_SUCCESS) {
         printf("Error: %s\n", file_error(err));
     }
+}
+
+void calcPos(xMax, yMax, n, screen)
+{
+    int posX = cos(M_PI * 2/6) * xMax;
+    int posY = sin(M_PI * 2/6) * yMax;
+    trianglePos point;
+    point.point1.x = cos(M_PI * 2/6) * xMax/2;
+    point.point1.y = sin(M_PI * 2/6) * yMax/2;
+    point.point2.x = cos(M_PI * 4/6) * xMax*1.5;
+    point.point2.y = sin(M_PI * 4/6) * yMax/2;
+    point.point3.x = xMax/2;
+    point.point3.y = sin(M_PI * 2/6) * yMax;
+    recursiveTriangle(point, n, screen);
 }
