@@ -16,4 +16,4 @@ typedef enum {
 
 const char* file_error(FileError err);
 
-FileError writeInFile(char screen[SCREEN_SIDE_LENGTH][SCREEN_SIDE_LENGTH]);
+FileError writeInFile(char* screen);

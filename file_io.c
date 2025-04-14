@@ -18,7 +18,7 @@ const char* file_error(FileError err) {
     }
 }
 
-FileError writeInFile(char screen[SCREEN_SIDE_LENGTH][SCREEN_SIDE_LENGTH])
+FileError writeInFile(char* screen)
 {
     FILE *fptr;
     // Create/Rewrite file
@@ -34,7 +34,7 @@ FileError writeInFile(char screen[SCREEN_SIDE_LENGTH][SCREEN_SIDE_LENGTH])
     }
     for(int i = 0; i < SCREEN_SIDE_LENGTH; i++) {
         for(int j = 0; j < SCREEN_SIDE_LENGTH; j++) {
-            if (fprintf(fptr,"%d %d %d ", screen[i][j], screen[i][j], screen[i][j]) < 0) {
+            if (fprintf(fptr,"%d %d %d ", screen[i * SCREEN_SIDE_LENGTH + j], screen[i * SCREEN_SIDE_LENGTH + j], screen[i * SCREEN_SIDE_LENGTH + j]) < 0) {
                 return FILE_WRITE_ERROR;
             }
         }

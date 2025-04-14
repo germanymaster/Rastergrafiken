@@ -3,19 +3,19 @@
 
 #define _USE_MATH_DEFINES
 
-void setPixel(int x, int y, char screen[SCREEN_SIDE_LENGTH][SCREEN_SIDE_LENGTH])
+void setPixel(int x, int y, char* screen)
 {
     if ((x >= SCREEN_SIDE_LENGTH) || (y >= SCREEN_SIDE_LENGTH) || (x < 0) || (y < 0)) {
         return;
     }
-    if (screen[y][x] == 1)
+    if (screen[y * SCREEN_SIDE_LENGTH + x] == 1)
     {
         return;
     }
-    screen[y][x] = 1;
+    screen[y * SCREEN_SIDE_LENGTH + x] = 1;
 }
 
-void line(int x0, int y0, int x1, int y1, char screen[SCREEN_SIDE_LENGTH][SCREEN_SIDE_LENGTH])
+void line(int x0, int y0, int x1, int y1, char* screen)
 {
     int dx =  abs(x1 - x0), sx = x0 < x1 ? 1 : -1;
     int dy = -abs(y1 - y0), sy = y0 < y1 ? 1 : -1;
@@ -30,7 +30,7 @@ void line(int x0, int y0, int x1, int y1, char screen[SCREEN_SIDE_LENGTH][SCREEN
     }
 }
 
-void rasterCircle(int x0, int y0, int radius, char screen[SCREEN_SIDE_LENGTH][SCREEN_SIDE_LENGTH])
+void rasterCircle(int x0, int y0, int radius, char* screen)
 {
     int f = 1 - radius;
     int ddF_x = 0;
@@ -67,7 +67,7 @@ void rasterCircle(int x0, int y0, int radius, char screen[SCREEN_SIDE_LENGTH][SC
 }
 
 
-void drawDiamond(int xMax, int yMax, int n, char screen[SCREEN_SIDE_LENGTH][SCREEN_SIDE_LENGTH])
+void drawDiamond(int xMax, int yMax, int n, char* screen)
 {
     int halfX = xMax / 2;
     int halfY = yMax / 2;
@@ -85,7 +85,7 @@ void drawDiamond(int xMax, int yMax, int n, char screen[SCREEN_SIDE_LENGTH][SCRE
 }
 
 
-void drawLinesInCircle(int xMax, int yMax, int n, char screen[SCREEN_SIDE_LENGTH][SCREEN_SIDE_LENGTH])
+void drawLinesInCircle(int xMax, int yMax, int n, char* screen)
 {
     double pi_fraction = 2*M_PI / n;
     PositionStruct points[1000] = {0, 0};
@@ -112,7 +112,7 @@ void drawLinesInCircle(int xMax, int yMax, int n, char screen[SCREEN_SIDE_LENGTH
     rasterCircle(xMax/2, yMax/2, ((xMax < yMax) ? xMax : yMax)/2, screen);
 }
 
-void drawLinesQuarterCircle(int xMax, int yMax, int n, char screen[SCREEN_SIDE_LENGTH][SCREEN_SIDE_LENGTH])
+void drawLinesQuarterCircle(int xMax, int yMax, int n, char* screen)
 {
     n++;
     double pi_fraction = -0.5*M_PI / n;
@@ -131,7 +131,7 @@ void drawLinesQuarterCircle(int xMax, int yMax, int n, char screen[SCREEN_SIDE_L
 }
 
 
-trianglePos recursiveTriangle(trianglePos point, int n, char screen[SCREEN_SIDE_LENGTH][SCREEN_SIDE_LENGTH])
+trianglePos recursiveTriangle(trianglePos point, int n, char* screen)
 {
     int ytemp = point.point1.y;
     int xtemp = point.point1.x;
@@ -152,7 +152,7 @@ trianglePos recursiveTriangle(trianglePos point, int n, char screen[SCREEN_SIDE_
     return point;
 }
 
-trianglePos recursiveTripleTriangle(trianglePos point, int n, _Bool combo, char screen[SCREEN_SIDE_LENGTH][SCREEN_SIDE_LENGTH])
+trianglePos recursiveTripleTriangle(trianglePos point, int n, _Bool combo, char* screen)
 {
     line(point.point1.x, point.point1.y, point.point3.x, point.point3.y, screen);
     line(point.point2.x, point.point2.y, point.point3.x, point.point3.y, screen);

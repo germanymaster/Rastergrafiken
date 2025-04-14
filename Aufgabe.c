@@ -15,7 +15,8 @@ int main()
     if (n < 0) {
         return -1;
     }
-    char screen[SCREEN_SIDE_LENGTH][SCREEN_SIDE_LENGTH] = {0};
+
+    char* screen = calloc(SCREEN_SIDE_LENGTH * SCREEN_SIDE_LENGTH, sizeof(char));
 
     int xMax = SCREEN_SIDE_LENGTH - 1;
     int yMax = SCREEN_SIDE_LENGTH - 1;
@@ -56,6 +57,8 @@ int main()
         printf("Error: %s\n", file_error(err));
     }
     
+    free(screen);
+
     char path[MAX_PATH];
     DWORD result = GetCurrentDirectoryA(MAX_PATH, path);
     
