@@ -29,40 +29,38 @@ FileError writeInFile(char* screen)
     if (err != 0 || fptr == NULL) {
         return FILE_OPEN_ERROR;
     }
-    // Write file
-    printf("Writing file...\n");
     if (fprintf(fptr, "P3\n %d %d\n 1\n", SCREEN_SIDE_LENGTH, SCREEN_SIDE_LENGTH) < 0) {
         return FILE_WRITE_ERROR;
     }
-    for(int i = 0; i < SCREEN_SIDE_LENGTH; i++) {
-        for(int j = 0; j < SCREEN_SIDE_LENGTH; j++) {
-            int current = screen[i * SCREEN_SIDE_LENGTH + j];
-            int counter = 0;
-            for(int k = j-1; current == screen[i * SCREEN_SIDE_LENGTH + k] && k < SCREEN_SIDE_LENGTH; ++k)
+    printf("Building content...\n");
+    char *str = calloc((SCREEN_SIDE_LENGTH * SCREEN_SIDE_LENGTH) * 6 + SCREEN_SIDE_LENGTH + 1, sizeof(char));
+    for(int k = 0; k < SCREEN_SIDE_LENGTH * SCREEN_SIDE_LENGTH; k++)
+    {
+        for (int j = 0; j < 6; j++)
+        {
+            if ( j % 2 == 0)
             {
-                counter++;
-                j = k;
-            }
-            counter *= 3*2;
-            char *str = calloc((counter + 1), sizeof(char));
-            for(int k = 0; k < counter; k++)
+                str[k*6 + j] = screen[k] + 48;
+            } else
             {
-                if ( k % 2 == 0)
-                {
-                str[k] = current + 48;
-                } else
-                {
-                    str[k] = ' ';
-                }
-            }
-            str[counter] = '\0';
-            if (fprintf(fptr,"%s ", str) < 0) {
-                return FILE_WRITE_ERROR;
+                str[k*6 + j] = ' ';
             }
         }
-        if (fprintf(fptr, "\n") < 0) {
-            return FILE_WRITE_ERROR;
+        if (k % SCREEN_SIDE_LENGTH == 9999)
+        {
+            str[k*6 + 6] = '\n';
         }
+    }
+    str[(SCREEN_SIDE_LENGTH * SCREEN_SIDE_LENGTH) * 6 + SCREEN_SIDE_LENGTH] = '\0';
+    // Write file
+    printf("Writing file...\n");
+    /*if (fprintf(fptr,"%s", str) < 0)
+    {
+        return FILE_WRITE_ERROR;
+    }*/
+    fwrite(str, sizeof(char), SCREEN_SIDE_LENGTH * SCREEN_SIDE_LENGTH * 6 + SCREEN_SIDE_LENGTH, fptr);
+    if (fprintf(fptr, "\n") < 0) {
+        return FILE_WRITE_ERROR;
     }
     // Close File
     if (fclose(fptr) != 0) {

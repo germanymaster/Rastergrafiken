@@ -48,7 +48,7 @@ int main()
     point.point3.x = xMax/2;
     point.point3.y = 0;
     //recursiveTriangle(point, n, screen);
-    _Bool combo = false;
+    _Bool combo = true;
     recursiveTripleTriangle(point, n, combo, screen);
     
     FileError err = writeInFile(screen);
