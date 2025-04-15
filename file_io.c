@@ -1,5 +1,7 @@
 #include "file_io.h"
 
+#include <stdlib.h>
+
 
 const char* file_error(FileError err) {
     switch (err) {
@@ -34,7 +36,27 @@ FileError writeInFile(char* screen)
     }
     for(int i = 0; i < SCREEN_SIDE_LENGTH; i++) {
         for(int j = 0; j < SCREEN_SIDE_LENGTH; j++) {
-            if (fprintf(fptr,"%d %d %d ", screen[i * SCREEN_SIDE_LENGTH + j], screen[i * SCREEN_SIDE_LENGTH + j], screen[i * SCREEN_SIDE_LENGTH + j]) < 0) {
+            int current = screen[i * SCREEN_SIDE_LENGTH + j];
+            int counter = 0;
+            for(int k = j-1; current == screen[i * SCREEN_SIDE_LENGTH + k] && k < SCREEN_SIDE_LENGTH; ++k)
+            {
+                counter++;
+                j = k;
+            }
+            counter *= 3*2;
+            char *str = calloc((counter + 1), sizeof(char));
+            for(int k = 0; k < counter; k++)
+            {
+                if ( k % 2 == 0)
+                {
+                str[k] = current + 48;
+                } else
+                {
+                    str[k] = ' ';
+                }
+            }
+            str[counter] = '\0';
+            if (fprintf(fptr,"%s ", str) < 0) {
                 return FILE_WRITE_ERROR;
             }
         }

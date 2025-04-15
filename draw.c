@@ -137,7 +137,6 @@ trianglePos recursiveTriangle(trianglePos point, int n, char* screen)
     int xtemp = point.point1.x;
     point.point1.x = point.point1.x + (point.point2.x-point.point1.x)/4;
     point.point1.y = point.point3.y - (point.point3.y - ytemp)/2;
-    printf("HERE:%d %d\n", point.point3.y, ytemp);
     point.point2.x = xtemp + (point.point2.x - xtemp)*0.75;
     point.point2.y = point.point3.y - (point.point3.y - point.point2.y)/2;
     point.point3.y = ytemp;
@@ -168,7 +167,7 @@ trianglePos recursiveTripleTriangle(trianglePos point, int n, _Bool combo, char*
     int xtemp = point.point1.x;
     point.point1.x = round(point.point1.x + (point.point2.x-point.point1.x)/4);
     point.point1.y = round(point.point3.y - (point.point3.y - ytemp)/2);
-    printf("HERE:%d %d\n", point.point3.y, ytemp);
+    //printf("HERE:%d %d\n", point.point3.y, ytemp);
     point.point2.x = round(xtemp + (point.point2.x - xtemp)*0.75);
     point.point2.y = round(point.point3.y - (point.point3.y - point.point2.y)/2);
     point.point3.y = point.point3.y;

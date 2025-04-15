@@ -2,7 +2,7 @@
 #include <stdio.h>
 
 enum {
-    SCREEN_SIDE_LENGTH = 1000
+    SCREEN_SIDE_LENGTH = 10000
 };
 
 typedef enum {
