@@ -133,6 +133,9 @@ void drawLinesQuarterCircle(int xMax, int yMax, int n, char* screen)
 
 trianglePos recursiveTriangle(trianglePos point, int n, char* screen)
 {
+    line(point.point1.x, point.point1.y, point.point3.x, point.point3.y, screen);
+    line(point.point2.x, point.point2.y, point.point3.x, point.point3.y, screen);
+    line(point.point1.x, point.point1.y,point.point2.x, point.point2.y, screen);
     int ytemp = point.point1.y;
     int xtemp = point.point1.x;
     point.point1.x = point.point1.x + (point.point2.x-point.point1.x)/4;
@@ -140,9 +143,6 @@ trianglePos recursiveTriangle(trianglePos point, int n, char* screen)
     point.point2.x = xtemp + (point.point2.x - xtemp)*0.75;
     point.point2.y = point.point3.y - (point.point3.y - point.point2.y)/2;
     point.point3.y = ytemp;
-    line(point.point1.x, point.point1.y, point.point3.x, point.point3.y, screen);
-    line(point.point2.x, point.point2.y, point.point3.x, point.point3.y, screen);
-    line(point.point1.x, point.point1.y,point.point2.x, point.point2.y, screen);
     if (n == 0)
     {
         return point;

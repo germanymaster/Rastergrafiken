@@ -33,12 +33,12 @@ int main()
     //
     int posX1 = cos(M_PI * 2/6) * xMax/2;
     int posY1 = sin(M_PI * 2/6) * yMax/2;
-    line(posX1, posY1, xMax/2, 0, screen);
+    //line(posX1, posY1, xMax/2, 0, screen);
     int posX2 = cos(M_PI * 4/6) * xMax/2 + SCREEN_SIDE_LENGTH;
     int posY2 = sin(M_PI * 4/6) * yMax/2;
-    line(posX2, posY2, xMax/2, 0, screen);
+    //line(posX2, posY2, xMax/2, 0, screen);
     
-    line(posX1, posY1, posX2, posY2, screen);
+    //line(posX1, posY1, posX2, posY2, screen);
     //
     trianglePos point;
     point.point1.x = posX1;
@@ -48,8 +48,9 @@ int main()
     point.point3.x = xMax/2;
     point.point3.y = 0;
     //recursiveTriangle(point, n, screen);
-    _Bool combo = true;
-    recursiveTripleTriangle(point, n, combo, screen);
+    _Bool combo = false;
+    //recursiveTripleTriangle(point, n, combo, screen);
+    recursiveTriangle(point, n, screen);
     
     FileError err = writeInFile(screen);
     
